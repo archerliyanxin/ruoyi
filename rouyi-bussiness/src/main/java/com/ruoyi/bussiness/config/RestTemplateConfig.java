@@ -1,4 +1,4 @@
-package config;
+package com.ruoyi.bussiness.config;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 

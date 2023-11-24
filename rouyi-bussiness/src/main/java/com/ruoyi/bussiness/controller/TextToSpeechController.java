@@ -45,6 +45,7 @@ public class TextToSpeechController extends BaseController {
     @Value("${server.ip}")
     private String serverIp; // 从配置文件中读取服务器IP
 
+
     private Logger log = LoggerFactory.getLogger(TextToSpeechController.class);
 
     private final Path path = Paths.get("fileStorage");
@@ -53,6 +54,12 @@ public class TextToSpeechController extends BaseController {
     @PostMapping("/upload")
     @ResponseBody
     public ResponseEntity<TextToSpeechResponse> convertTextToSpeechController(@RequestParam("file") MultipartFile file) throws Exception{
+//        , @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false)String token
+//        if(!(token != null && token.equals("Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"))){
+//            return ResponseEntity.badRequest()
+//                    .body(new TextToSpeechResponse("token is invalid, connection refused!"));
+//        }
+        log.info("into save");
         try {
             fileStorageService.save(file);
         } catch (Exception e) {
@@ -87,8 +94,8 @@ public class TextToSpeechController extends BaseController {
     @PostMapping("/text")
     @ResponseBody
     public ResponseEntity<TextToSpeechResponse> convertTextToVideo(@RequestBody TextToSpeechRequest request) throws Exception{
-        log.info("after save");
 
+        log.info("into save");
         String audioSpeechUrl = iSpeechToGetTextService.convertTextToSpeech(request.getText(),path.toAbsolutePath().toString());
         log.info("audioSpeechUrl:" + audioSpeechUrl);
         String audioLocation = iSpeechToGetTextService.getAudioUrlFromSpeech(audioSpeechUrl);
