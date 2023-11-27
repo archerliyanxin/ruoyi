@@ -14,9 +14,11 @@ import java.util.HashMap;
  * @author 12290
  */
 public class HttpSend {
+    private static final String LOCAL_TOKEN = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
     public static String send(String speechUrl, String targetUrl, String requestType,String responseType){
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(LOCAL_TOKEN);
         headers.setContentType(MediaType.APPLICATION_JSON);
         HashMap<String,String> map = new HashMap<>();
         map.put(requestType, speechUrl);
@@ -36,6 +38,7 @@ public class HttpSend {
     public static String send(String speechUrl, String targetUrl, String requestType,String responseType,String wavUrl){
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(LOCAL_TOKEN);
         headers.setContentType(MediaType.APPLICATION_JSON);
         HashMap<String,String> map = new HashMap<>();
         map.put(requestType, speechUrl);

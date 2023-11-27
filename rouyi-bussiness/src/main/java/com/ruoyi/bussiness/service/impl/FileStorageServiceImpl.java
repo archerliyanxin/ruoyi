@@ -1,7 +1,10 @@
 package com.ruoyi.bussiness.service.impl;
 
+import com.ruoyi.bussiness.controller.TextToSpeechController;
 import com.ruoyi.bussiness.service.FileStorageService;
 import org.apache.poi.util.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -12,10 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.nio.file.attribute.UserPrincipal;
 import java.nio.file.attribute.UserPrincipalLookupService;
 import java.util.stream.Stream;
@@ -27,17 +27,18 @@ import java.util.stream.Stream;
  */
 @Service("fileStorageService")
 public class FileStorageServiceImpl implements FileStorageService {
+    private Logger log = LoggerFactory.getLogger(FileStorageServiceImpl.class);
     private final Path path = Paths.get("fileStorage");
-    // Warning: 当没有这个登录的linux 没有用户的时候，会报错
+    // Warning: 当没有这个登录的linux账户 没有用户的时候，会报错
     @Value("${server.logOwner}")
     private String logOwner;
     @Override
     public void init() {
         try {
             Files.createDirectory(path);
-            UserPrincipalLookupService lookupService = FileSystems.getDefault().getUserPrincipalLookupService();
-            UserPrincipal user = lookupService.lookupPrincipalByName(logOwner);
-            Files.setOwner(path,user);
+//            UserPrincipalLookupService lookupService = FileSystems.getDefault().getUserPrincipalLookupService();
+//            UserPrincipal user = lookupService.lookupPrincipalByName(logOwner);
+//            Files.setOwner(path,user);
         } catch (IOException e) {
             throw new RuntimeException("Could not initialize folder for upload!");
         }
@@ -48,7 +49,24 @@ public class FileStorageServiceImpl implements FileStorageService {
         InputStream inputStream = null;
         try {
             inputStream = multipartFile.getInputStream();
-            Files.copy(inputStream,this.path.resolve(multipartFile.getOriginalFilename()));
+            Path target = this.path.resolve(multipartFile.getOriginalFilename());
+//            // 每次文件来了，都给同名的名字加时间后缀，防止存失败
+//            if(Files.exists(target)){
+//                String uniqueFileName = multipartFile.getOriginalFilename() + "_" + System.currentTimeMillis();
+//                target = this.path.resolve(uniqueFileName);
+//            }
+            if(Files.exists(target)){
+                log.info(multipartFile.getOriginalFilename()+"file exist");
+                Files.copy(inputStream, target, StandardCopyOption.REPLACE_EXISTING);
+            }else{
+                log.info(multipartFile.getOriginalFilename()+"begin send");
+                Files.copy(inputStream, target);
+            }
+
+//            UserPrincipalLookupService lookupService = FileSystems.getDefault().getUserPrincipalLookupService();
+//            UserPrincipal user = lookupService.lookupPrincipalByName(logOwner);
+//            Files.setOwner(target, user);
+//            Files.copy(inputStream, target, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new RuntimeException("Could not store the file. Error:"+e.getMessage());
         }finally {

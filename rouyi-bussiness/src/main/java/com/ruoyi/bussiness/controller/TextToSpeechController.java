@@ -51,7 +51,7 @@ public class TextToSpeechController extends BaseController {
     private final Path path = Paths.get("fileStorage");
 
     @ApiOperation("语音转文本")
-    @PostMapping("/upload")
+    @PostMapping(value = "/upload",produces = "application/json")
     @ResponseBody
     public ResponseEntity<TextToSpeechResponse> convertTextToSpeechController(@RequestParam("file") MultipartFile file) throws Exception{
 //        , @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false)String token
