@@ -131,3 +131,7 @@ xss:
   excludes: /system/notice
   # 匹配链接
   urlPatterns: /system/*,/monitor/*,/tool/*
+voice:
+  appid: ee1d70c8
+  keySecret: 46fe4c4665af9bc9ee84aa951d85e92e
+
