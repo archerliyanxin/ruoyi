@@ -35,9 +35,9 @@ public class FileStorageServiceImpl implements FileStorageService {
     public void init() {
         try {
             Files.createDirectory(path);
-            UserPrincipalLookupService lookupService = FileSystems.getDefault().getUserPrincipalLookupService();
-            UserPrincipal user = lookupService.lookupPrincipalByName(logOwner);
-            Files.setOwner(path,user);
+//            UserPrincipalLookupService lookupService = FileSystems.getDefault().getUserPrincipalLookupService();
+//            UserPrincipal user = lookupService.lookupPrincipalByName(logOwner);
+//            Files.setOwner(path,user);
         } catch (IOException e) {
             throw new RuntimeException("Could not initialize folder for upload!");
         }

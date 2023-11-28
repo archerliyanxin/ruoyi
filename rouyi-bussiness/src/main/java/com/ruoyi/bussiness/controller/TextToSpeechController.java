@@ -2,6 +2,7 @@ package com.ruoyi.bussiness.controller;
 
 import com.ruoyi.bussiness.domain.TextToSpeechRequest;
 import com.ruoyi.bussiness.domain.TextToSpeechResponse;
+import com.ruoyi.bussiness.raasr.Ifasrdemo;
 import com.ruoyi.bussiness.service.FileStorageService;
 import com.ruoyi.bussiness.service.ISpeechToGetTextService;
 import com.ruoyi.bussiness.utils.HttpSend;
@@ -45,7 +46,8 @@ public class TextToSpeechController extends BaseController {
     @Value("${server.ip}")
     private String serverIp; // 从配置文件中读取服务器IP
 
-
+    @Autowired
+    private Ifasrdemo ifasrdemo;
     private Logger log = LoggerFactory.getLogger(TextToSpeechController.class);
 
     private final Path path = Paths.get("fileStorage");
@@ -76,15 +78,16 @@ public class TextToSpeechController extends BaseController {
 //                ).build().toString();
 
         log.info("speechUrl:" + speechUrl);
-        String speechTotext = iSpeechToGetTextService.SendSpeechToAlg(speechUrl);
-        log.info("speechTotext:" + speechTotext);
-        String gcText = iSpeechToGetTextService.SendTextToGetText(speechTotext);
-        log.info("gcText:" + gcText);
-        String audioSpeechUrl = iSpeechToGetTextService.convertTextToSpeech(gcText,path.toAbsolutePath().toString());
-        log.info("audioSpeechUrl:" + audioSpeechUrl);
-        String audioLocation = iSpeechToGetTextService.getAudioUrlFromSpeech(audioSpeechUrl);
-        log.info("audioLocation:" + audioLocation);
-        String audioUrl = "http://" + serverIp +"/videos/"+ audioLocation.substring(audioLocation.lastIndexOf("/") + 1);
+        String audioUrl =ifasrdemo.SendTextToGetText(speechUrl);
+//        String speechTotext = iSpeechToGetTextService.SendSpeechToAlg(speechUrl);
+//        log.info("speechTotext:" + speechTotext);
+//        String gcText = iSpeechToGetTextService.SendTextToGetText(speechTotext);
+//        log.info("gcText:" + gcText);
+//        String audioSpeechUrl = iSpeechToGetTextService.convertTextToSpeech(gcText,path.toAbsolutePath().toString());
+//        log.info("audioSpeechUrl:" + audioSpeechUrl);
+//        String audioLocation = iSpeechToGetTextService.getAudioUrlFromSpeech(audioSpeechUrl);
+//        log.info("audioLocation:" + audioLocation);
+//        String audioUrl = "http://" + serverIp +"/videos/"+ audioLocation.substring(audioLocation.lastIndexOf("/") + 1);
         TextToSpeechResponse response = new TextToSpeechResponse();
         response.setAudioUrl(audioUrl);
         return ResponseEntity.ok(response);

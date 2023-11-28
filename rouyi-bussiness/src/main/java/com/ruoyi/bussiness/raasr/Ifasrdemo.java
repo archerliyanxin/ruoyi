@@ -30,11 +30,11 @@ public class Ifasrdemo {
     private String keySecret ;
     private final Gson gson = new Gson();
 
-    public void SendTextToGetText(String location) throws Exception {
+    public String SendTextToGetText(String location) throws Exception {
         String result = upload(location);
         String jsonStr = StringEscapeUtils.unescapeJavaScript(result);
         String orderId = String.valueOf(JSONUtil.getByPath(JSONUtil.parse(jsonStr), "content.orderId"));
-        getResult(orderId);
+        return getResult(orderId);
     }
 
     private String upload(String location) throws SignatureException, FileNotFoundException {
@@ -77,7 +77,7 @@ public class Ifasrdemo {
             JsonParse jsonParse = gson.fromJson(response, JsonParse.class);
             if (jsonParse.content.orderInfo.status == 4 || jsonParse.content.orderInfo.status == -1) {
                 log.info("订单完成:" + response);
-                write(response);
+
                 return response;
             } else {
                 log.info("进行中...，状态为:" + jsonParse.content.orderInfo.status);
