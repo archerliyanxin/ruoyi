@@ -1,6 +1,7 @@
 package com.ruoyi.bussiness.utils;
 
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONException;
 import com.alibaba.fastjson2.TypeReference;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.*;
@@ -18,7 +19,6 @@ public class HttpSend {
     public static String send(String speechUrl, String targetUrl, String requestType,String responseType){
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
-
         headers.setContentType(MediaType.APPLICATION_JSON);
         HashMap<String,String> map = new HashMap<>();
         map.put(requestType, speechUrl);
