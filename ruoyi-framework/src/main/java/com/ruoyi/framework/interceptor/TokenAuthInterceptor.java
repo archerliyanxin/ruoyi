@@ -12,6 +12,12 @@ public class TokenAuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        String requestURI = request.getRequestURI();
+        // 只拦截前端请求
+        if(!requestURI.startsWith("/business")){
+            return true;
+        }
+        // 其他大部分
         String token = request.getHeader("Authorization");
         if (!(token != null && LOCAL_TOKEN.equals(token))) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

@@ -18,8 +18,7 @@ import java.util.HashMap;
 @Service
 public class SpeechToGetTextServiceImpl implements ISpeechToGetTextService {
 
-//    @Resource
-//    private RestTemplate restTemplate;
+
     @Override
     public String SendSpeechToAlg(String speechUrl) {
         return HttpSend.send(speechUrl,"http://192.168.1.20:13002/sound2text","file_loc","result");

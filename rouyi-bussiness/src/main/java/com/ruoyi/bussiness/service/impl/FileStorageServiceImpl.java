@@ -1,6 +1,5 @@
 package com.ruoyi.bussiness.service.impl;
 
-import com.ruoyi.bussiness.controller.TextToSpeechController;
 import com.ruoyi.bussiness.service.FileStorageService;
 import org.apache.poi.util.IOUtils;
 import org.slf4j.Logger;
@@ -16,8 +15,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.nio.file.*;
-import java.nio.file.attribute.UserPrincipal;
-import java.nio.file.attribute.UserPrincipalLookupService;
+import java.nio.file.attribute.*;
+import java.util.Set;
 import java.util.stream.Stream;
 
 
@@ -32,29 +31,24 @@ public class FileStorageServiceImpl implements FileStorageService {
     // Warning: 当没有这个登录的linux账户 没有用户的时候，会报错
     @Value("${server.logOwner}")
     private String logOwner;
+    @Value("${server.logGroup}")
+    private String logGroup;
     @Override
     public void init() {
         try {
             Files.createDirectory(path);
-//            UserPrincipalLookupService lookupService = FileSystems.getDefault().getUserPrincipalLookupService();
-//            UserPrincipal user = lookupService.lookupPrincipalByName(logOwner);
-//            Files.setOwner(path,user);
+            chmodPermit(path);
         } catch (IOException e) {
             throw new RuntimeException("Could not initialize folder for upload!");
         }
     }
-
     @Override
     public void save(MultipartFile multipartFile) {
         InputStream inputStream = null;
         try {
             inputStream = multipartFile.getInputStream();
             Path target = this.path.resolve(multipartFile.getOriginalFilename());
-//            // 每次文件来了，都给同名的名字加时间后缀，防止存失败
-//            if(Files.exists(target)){
-//                String uniqueFileName = multipartFile.getOriginalFilename() + "_" + System.currentTimeMillis();
-//                target = this.path.resolve(uniqueFileName);
-//            }
+
             if(Files.exists(target)){
                 log.info(multipartFile.getOriginalFilename()+"file exist");
                 Files.copy(inputStream, target, StandardCopyOption.REPLACE_EXISTING);
@@ -62,11 +56,7 @@ public class FileStorageServiceImpl implements FileStorageService {
                 log.info(multipartFile.getOriginalFilename()+"begin send");
                 Files.copy(inputStream, target);
             }
-
-//            UserPrincipalLookupService lookupService = FileSystems.getDefault().getUserPrincipalLookupService();
-//            UserPrincipal user = lookupService.lookupPrincipalByName(logOwner);
-//            Files.setOwner(target, user);
-//            Files.copy(inputStream, target, StandardCopyOption.REPLACE_EXISTING);
+            chmodPermit(target);
         } catch (IOException e) {
             throw new RuntimeException("Could not store the file. Error:"+e.getMessage());
         }finally {
@@ -105,4 +95,20 @@ public class FileStorageServiceImpl implements FileStorageService {
         FileSystemUtils.deleteRecursively(path.toFile());
     }
 
+    public void chmodPermit(Path path) throws IOException {
+        //设置文件所属用户
+        String ownerName = logOwner;
+        UserPrincipalLookupService lookupService = FileSystems.getDefault().getUserPrincipalLookupService();
+        UserPrincipal owner = lookupService.lookupPrincipalByName(ownerName);
+        Files.setOwner(path, owner);
+
+        // 设置文件所属组
+        String groupName = logGroup;
+        GroupPrincipal group = lookupService.lookupPrincipalByGroupName(groupName);
+        Files.getFileAttributeView(path, PosixFileAttributeView.class).setGroup(group);
+
+        // 设置文件权限
+        Set<PosixFilePermission> permissions = PosixFilePermissions.fromString("rwxrw-rw-");
+        Files.setPosixFilePermissions(path, permissions);
+    }
 }

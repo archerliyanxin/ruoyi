@@ -18,7 +18,7 @@ public class HttpSend {
     public static String send(String speechUrl, String targetUrl, String requestType,String responseType){
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(LOCAL_TOKEN);
+
         headers.setContentType(MediaType.APPLICATION_JSON);
         HashMap<String,String> map = new HashMap<>();
         map.put(requestType, speechUrl);
@@ -38,7 +38,7 @@ public class HttpSend {
     public static String send(String speechUrl, String targetUrl, String requestType,String responseType,String wavUrl){
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(LOCAL_TOKEN);
+
         headers.setContentType(MediaType.APPLICATION_JSON);
         HashMap<String,String> map = new HashMap<>();
         map.put(requestType, speechUrl);
