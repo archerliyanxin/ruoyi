@@ -35,6 +35,7 @@ server:
       max: 800
       # Tomcat启动初始化的线程数，默认值10
       min-spare: 100
+    connection-timeout: 600000
 
 # 日志配置
 logging:

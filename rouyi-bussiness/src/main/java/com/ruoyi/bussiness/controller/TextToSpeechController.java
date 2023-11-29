@@ -46,7 +46,7 @@ public class TextToSpeechController extends BaseController {
     private String serverIp; // 从配置文件中读取服务器IP
 
 
-    private Logger log = LoggerFactory.getLogger(TextToSpeechController.class);
+    private final Logger log = LoggerFactory.getLogger(TextToSpeechController.class);
 
     private final Path path = Paths.get("fileStorage");
 
@@ -75,7 +75,7 @@ public class TextToSpeechController extends BaseController {
 //                        file.getOriginalFilename()
 //                ).build().toString();
 
-        log.info("speechUrl:" + speechUrl);
+        log.info("speechUrl:{0}" , speechUrl);
         String speechTotext = iSpeechToGetTextService.SendSpeechToAlg(speechUrl);
         log.info("speechTotext:" + speechTotext);
         String gcText = iSpeechToGetTextService.SendTextToGetText(speechTotext);

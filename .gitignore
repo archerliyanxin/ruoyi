@@ -45,3 +45,5 @@ nbdist/
 !*/build/*.java
 !*/build/*.html
 !*/build/*.xml
+/rouyi-bussiness/src/main/java/com/ruoyi/bussiness/controller/
+/ruoyi-ui/

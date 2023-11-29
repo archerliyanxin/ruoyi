@@ -15,36 +15,28 @@ import java.util.HashMap;
  * @author 12290
  */
 public class HttpSend {
-    private static final String LOCAL_TOKEN = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
     public static String send(String speechUrl, String targetUrl, String requestType,String responseType){
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HashMap<String,String> map = new HashMap<>();
         map.put(requestType, speechUrl);
-        String url = JSON.toJSONString(map);
-        HttpEntity<String> requestEntity = new HttpEntity<String>(url,headers);
-        ResponseEntity<String> responseEntity = restTemplate.exchange(
-                targetUrl,
-                HttpMethod.POST,
-                requestEntity,
-                String.class
-        );
-        String textResponse = responseEntity.getBody();
-        HashMap<String, String> dataMap = JSON.parseObject(textResponse, new TypeReference<HashMap<String,String>>() {});
-        String audioUrl = dataMap.get(responseType);
-        return audioUrl;
+        return getString(targetUrl, responseType, restTemplate, headers, map);
     }
     public static String send(String speechUrl, String targetUrl, String requestType,String responseType,String wavUrl){
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
-
         headers.setContentType(MediaType.APPLICATION_JSON);
         HashMap<String,String> map = new HashMap<>();
         map.put(requestType, speechUrl);
         map.put("wav_file_path",wavUrl);
+        return getString(targetUrl, responseType, restTemplate, headers, map);
+    }
+
+    private static String getString(String targetUrl, String responseType, RestTemplate restTemplate, HttpHeaders headers, HashMap<String, String> map) {
         String url = JSON.toJSONString(map);
-        HttpEntity<String> requestEntity = new HttpEntity<String>(url,headers);
+        HttpEntity<String> requestEntity = new HttpEntity<>(url,headers);
+
         ResponseEntity<String> responseEntity = restTemplate.exchange(
                 targetUrl,
                 HttpMethod.POST,
@@ -53,9 +45,13 @@ public class HttpSend {
         );
         String textResponse = responseEntity.getBody();
         HashMap<String, String> dataMap = JSON.parseObject(textResponse, new TypeReference<HashMap<String,String>>() {});
-        String audioUrl = dataMap.get(responseType);
-        return audioUrl;
+        if (dataMap != null) {
+            return dataMap.get(responseType);
+        }else{
+            throw new JSONException("文本转化失败");
+        }
     }
+
     public static String generateFileUrl(String fileUri){
         String serverIp ;
         try {
