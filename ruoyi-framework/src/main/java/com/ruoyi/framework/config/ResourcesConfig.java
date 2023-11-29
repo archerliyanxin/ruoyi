@@ -51,7 +51,7 @@ public class ResourcesConfig implements WebMvcConfigurer
     public void addInterceptors(InterceptorRegistry registry)
     {
         registry.addInterceptor(repeatSubmitInterceptor).addPathPatterns("/**");
-        registry.addInterceptor(tokenAuthInterceptor).addPathPatterns("/business/**");
+//        registry.addInterceptor(tokenAuthInterceptor).addPathPatterns("/business/**");
     }
 
     /**

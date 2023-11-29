@@ -18,7 +18,7 @@ public class HttpSend {
     public static String send(String speechUrl, String targetUrl, String requestType,String responseType){
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
-
+        speechUrl = "/home/algorithm/java_shiziren/fileStorage/Audio_23112310571201012112.mp3";
         headers.setContentType(MediaType.APPLICATION_JSON);
         HashMap<String,String> map = new HashMap<>();
         map.put(requestType, speechUrl);

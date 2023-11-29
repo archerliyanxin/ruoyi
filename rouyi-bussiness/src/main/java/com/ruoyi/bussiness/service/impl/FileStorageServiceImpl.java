@@ -37,7 +37,7 @@ public class FileStorageServiceImpl implements FileStorageService {
     public void init() {
         try {
             Files.createDirectory(path);
-            chmodPermit(path);
+//            chmodPermit(path);
         } catch (IOException e) {
             throw new RuntimeException("Could not initialize folder for upload!");
         }
@@ -56,7 +56,7 @@ public class FileStorageServiceImpl implements FileStorageService {
                 log.info(multipartFile.getOriginalFilename()+"begin send");
                 Files.copy(inputStream, target);
             }
-            chmodPermit(target);
+//            chmodPermit(target);
         } catch (IOException e) {
             throw new RuntimeException("Could not store the file. Error:"+e.getMessage());
         }finally {
