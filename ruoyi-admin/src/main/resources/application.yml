@@ -20,8 +20,8 @@ server:
   # 服务器的HTTP端口，默认为8080
   port: 8080
   ip: c0.iis.pub
-  logOwner: algorithm
-  logGroup: algorithm
+  logOwner: xfa
+  logGroup: xfa
   servlet:
     # 应用的访问路径
     context-path: /

@@ -5,6 +5,7 @@ import com.ruoyi.bussiness.domain.TextToSpeechResponse;
 import com.ruoyi.bussiness.service.FileStorageService;
 import com.ruoyi.bussiness.service.ISpeechToGetTextService;
 import com.ruoyi.bussiness.utils.HttpSend;
+import com.ruoyi.bussiness.utils.LocalIP;
 import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.common.core.controller.BaseController;
 import io.swagger.annotations.Api;
@@ -42,9 +43,8 @@ public class TextToSpeechController extends BaseController {
 
     @Autowired
     private FileStorageService fileStorageService;
-    @Value("${server.ip}")
-    private String serverIp; // 从配置文件中读取服务器IP
 
+//    private String serverIp; // 从配置文件中读取服务器IP
 
     private final Logger log = LoggerFactory.getLogger(TextToSpeechController.class);
 
@@ -84,6 +84,7 @@ public class TextToSpeechController extends BaseController {
         log.info("audioSpeechUrl:" + audioSpeechUrl);
         String audioLocation = iSpeechToGetTextService.getAudioUrlFromSpeech(audioSpeechUrl);
         log.info("audioLocation:" + audioLocation);
+        String serverIp = LocalIP.getLocalIp();
         String audioUrl = "http://" + serverIp +"/videos/"+ audioLocation.substring(audioLocation.lastIndexOf("/") + 1);
         TextToSpeechResponse response = new TextToSpeechResponse();
         response.setAudioUrl(audioUrl);
@@ -101,6 +102,7 @@ public class TextToSpeechController extends BaseController {
         String audioLocation = iSpeechToGetTextService.getAudioUrlFromSpeech(audioSpeechUrl);
         log.info("audioUrl:" + audioLocation);
         TextToSpeechResponse response = new TextToSpeechResponse();
+        String serverIp = LocalIP.getLocalIp();
         String audioUrl = "http://" + serverIp +"/videos/"+ audioLocation.substring(audioLocation.lastIndexOf("/") + 1);
         response.setAudioUrl(audioUrl);
         return ResponseEntity.ok(response);
