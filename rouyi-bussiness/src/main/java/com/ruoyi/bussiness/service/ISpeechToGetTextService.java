@@ -1,5 +1,6 @@
 package com.ruoyi.bussiness.service;
 
+import com.ruoyi.bussiness.domain.urlMsg;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -13,9 +14,9 @@ public interface ISpeechToGetTextService {
 
     public  String convertTextToSpeech(String text,String wavUrl);
 
-    public String postFileToAlg(MultipartFile file) throws IOException;
+    public String postFileToAlg(String filePath) throws IOException;
 
     public String getNerfVideoAlg() throws IOException;
 
-    public void exchangeBackbond(String url, String resultUrl);
+    public urlMsg exchangeBackbond(String pathParm);
 }

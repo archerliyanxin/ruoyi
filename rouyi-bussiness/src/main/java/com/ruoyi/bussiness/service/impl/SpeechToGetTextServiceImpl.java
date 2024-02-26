@@ -2,6 +2,7 @@ package com.ruoyi.bussiness.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ruoyi.bussiness.domain.urlMsg;
 import com.ruoyi.bussiness.exception.FileFormatException;
 import com.ruoyi.bussiness.service.IFfmpegConver;
 import com.ruoyi.bussiness.service.ISpeechToGetTextService;
@@ -9,6 +10,7 @@ import com.ruoyi.bussiness.utils.HttpSend;
 
 import com.ruoyi.bussiness.utils.NlsClientRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -61,12 +63,12 @@ public class SpeechToGetTextServiceImpl implements ISpeechToGetTextService {
     }
 
     @Override
-    public String postFileToAlg(MultipartFile file) throws IOException {
+    public String postFileToAlg(String filePath) throws IOException {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("file", new MultipartInputStreamFileResource(file));
+        body.add("file", new FileSystemResource(filePath));
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
@@ -96,7 +98,7 @@ public class SpeechToGetTextServiceImpl implements ISpeechToGetTextService {
             long startTime = System.currentTimeMillis();
 
             // 轮询URL直到返回视频结果
-            if(isVideoResult(url)){
+            if(!isVideoResult(url)){
                 return "文件链接未给出";
             }
             while (true) {
@@ -125,8 +127,8 @@ public class SpeechToGetTextServiceImpl implements ISpeechToGetTextService {
     }
 
     @Override
-    public void exchangeBackbond(String url, String resultUrl) {
-        HttpSend.send(url, "http://localhost:13003/text2sound", "video_url", "result", resultUrl);
+    public urlMsg  exchangeBackbond(String pathParm) {
+        return HttpSend.sendGetRequest("http://localhost:8981/test", pathParm);
     }
 
     private String extractUrlFromResponse(String responseBody) {

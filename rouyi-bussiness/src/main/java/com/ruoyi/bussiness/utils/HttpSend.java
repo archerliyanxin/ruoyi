@@ -3,12 +3,15 @@ package com.ruoyi.bussiness.utils;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONException;
 import com.alibaba.fastjson2.TypeReference;
+import com.ruoyi.bussiness.domain.urlMsg;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.annotation.Resource;
 import java.net.InetAddress;
+import java.net.URI;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 /**
@@ -31,6 +34,19 @@ public class HttpSend {
         map.put(requestType, speechUrl);
         map.put("wav_file_path",wavUrl);
         return getString(targetUrl, responseType, restTemplate, headers, map);
+    }
+
+    public static urlMsg sendGetRequest(String baseUrl, String pathParam) {
+        // 构建请求的URL，包含参数
+        URI uri = UriComponentsBuilder.fromUriString(baseUrl)
+                .queryParam("path", pathParam)
+                .build()
+                .toUri();
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<urlMsg> response = restTemplate.getForEntity(uri, urlMsg.class);
+
+        return response.getBody();
     }
 
     private static String getString(String targetUrl, String responseType, RestTemplate restTemplate, HttpHeaders headers, HashMap<String, String> map) {
