@@ -16,7 +16,6 @@ import org.springframework.web.client.RestTemplate;
 public class RestTemplateConfig {
     @Bean
     public RestTemplate restTemplate(){
-        RestTemplate restTemplate = new RestTemplate();
-        return restTemplate;
+        return new RestTemplate();
     }
 }

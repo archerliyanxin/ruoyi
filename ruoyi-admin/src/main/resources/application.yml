@@ -43,6 +43,11 @@ logging:
     com.ruoyi: debug
     org.springframework: warn
 
+audio:
+  appkey: g3P1LSst5MrlGxbQ
+  id: sfxhVQ04eqWqnM0L4wPrzl5x
+  secret: dfN9GzrGWsP97fVZleqFkmpC1bG2NSps
+  url: wss://nls-gateway-cn-shanghai.aliyuncs.com/ws/v1
 # 用户配置
 user:
   password:
