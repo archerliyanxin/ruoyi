@@ -18,7 +18,13 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.client.RestTemplate;
+
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -29,7 +35,7 @@ public class SpeechToGetTextServiceImpl implements ISpeechToGetTextService {
 
     @Autowired
     private IFfmpegConver ffmpegConver;
-    private final String GEN_URL = "https://u22746-a810-129cef75.westc.gpuhub.com:8443/gen";
+    private final String GEN_URL = "https://u22746-a49f-704dee5b.westb.seetacloud.com:8443/gen";
 
     @Override
     public String SendSpeechToAlg(String speechUrl) throws Exception {
@@ -74,7 +80,7 @@ public class SpeechToGetTextServiceImpl implements ISpeechToGetTextService {
 
         // 发送文件上传请求
         ResponseEntity<String> response = new RestTemplate().exchange(
-                "https://u22746-a810-129cef75.westc.gpuhub.com:8443/upload",
+                "https://u22746-a49f-704dee5b.westb.seetacloud.com:8443/upload",
                 HttpMethod.POST,
                 requestEntity,
                 String.class);
@@ -109,7 +115,27 @@ public class SpeechToGetTextServiceImpl implements ISpeechToGetTextService {
                     ResponseEntity<byte[]> videoResponse = new RestTemplate().exchange(url, HttpMethod.GET, null, byte[].class);
                     if (videoResponse.getStatusCode() == HttpStatus.OK) {
                         // 如果响应状态码为200，说明视频已经生成
-                        return url;
+                        String saveDirectory = "fileStorage";
+
+                        // Create the directory if it doesn't exist
+                        Path directoryPath = Paths.get(saveDirectory);
+                        if (!Files.exists(directoryPath)) {
+                            Files.createDirectories(directoryPath);
+                        }
+
+                        // Get the video file name from the URL
+                        String videoFileName = url.substring(url.lastIndexOf('/') + 1);
+
+                        // Create the path to save the video file
+                        Path filePath = Paths.get(saveDirectory, videoFileName);
+
+                        // Write the video content to the file
+                        FileOutputStream outputStream = new FileOutputStream(filePath.toString());
+                        outputStream.write(videoResponse.getBody());
+                        outputStream.close();
+
+                        // Return the absolute path of the saved video file
+                        return filePath.toAbsolutePath().toString();
                     }
                 } catch (Exception  e) {
                     try {

@@ -127,13 +127,15 @@ public class TextToSpeechController extends BaseController {
         if(!result.endsWith(".mp4")){
             return ResponseEntity.ok("nerf视频未生成");
         }
-        String videoLocal = "";
-        urlMsg urlmsg = iSpeechToGetTextService.exchangeBackbond(videoLocal);
-        log.info("get bond:"+videoLocal);
-        VideoInfo videoInfo = ffmpegTools.getVideoInfo(videoLocal);
-        videoLocal = "http://" + serverIp +"/videos/"+ urlmsg.getData().substring(urlmsg.getData().lastIndexOf("/") + 1);
-        videoInfo.setLocaltion(videoLocal);
-        return ResponseEntity.ok(videoLocal);
+//        String videoLocal = "";
+//        urlMsg urlmsg = iSpeechToGetTextService.exchangeBackbond(videoLocal);
+//        log.info("get bond:"+videoLocal);
+//        VideoInfo videoInfo = ffmpegTools.getVideoInfo(videoLocal);
+//        videoLocal = "http://" + serverIp +"/videos/"+ urlmsg.getData().substring(urlmsg.getData().lastIndexOf("/") + 1);
+//        videoInfo.setLocaltion(videoLocal);
+//        return ResponseEntity.ok(videoLocal);
+        result = "http://" + serverIp +"/videos/"+ result.substring(result.lastIndexOf("/") + 1);
+        return ResponseEntity.ok(result);
     }
 
 //    @ApiOperation("和实时数字人交互")
